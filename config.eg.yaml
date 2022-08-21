@@ -1,0 +1,23 @@
+name: "bluebell"
+mode: "dev"
+add: "127.0.0.1"
+port: 8456
+version: "v0.0.1"
+start_time: "2022-07-23"
+machine_id: 1
+read_timeout: 60
+write_timeout: 60
+log:
+  level: "debug"
+  filename: "./bluebell.log"
+  max_size: 1000
+  max_age: 3600
+  max_backups: 5
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  user: xxx
+  password: xxx
+  db: bluebell
+  max_open_conns: 100
+  max_idle_conns: 20
