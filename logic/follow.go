@@ -46,3 +46,15 @@ func Follow(p *models.ParamFollow) error {
 	return err
 
 }
+
+func GetFollowers(userId string) (*models.Userid, error) {
+
+	return mysql.GetFollowers(userId)
+
+}
+
+func GetFollowing(userId string) (*models.Userid, error) {
+
+	return mysql.GetFollowing(userId)
+
+}

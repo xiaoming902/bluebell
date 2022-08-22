@@ -27,6 +27,14 @@ func SetupRouter() *gin.Engine {
 	// 查看用户主页
 	r.GET("/user/:userid", controller.GetUserInfoHandler)
 
+	// 查看关注我的人 (粉丝)
+
+	r.GET("/follow/followers", controller.GetFollowersHandler)
+
+	// 查看我关注的人
+
+	r.GET("/follow/following", controller.GetFollowingHandler)
+
 	v1.Use(middlewares.JWTAuthMiddleware())
 
 	{

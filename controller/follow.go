@@ -3,7 +3,6 @@ package controller
 import (
 	"bluebell/logic"
 	"bluebell/models"
-
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -26,5 +25,33 @@ func FollowHandler(c *gin.Context) {
 		return
 	}
 	ResponseSuccess(c, "添加成功")
+
+}
+
+func GetFollowersHandler(c *gin.Context) {
+	userId := c.Query("user_id")
+
+	data, err := logic.GetFollowers(userId)
+
+	if err != nil {
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+
+	ResponseSuccess(c, data)
+
+}
+
+func GetFollowingHandler(c *gin.Context) {
+	userId := c.Query("user_id")
+
+	data, err := logic.GetFollowing(userId)
+
+	if err != nil {
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+
+	ResponseSuccess(c, data)
 
 }

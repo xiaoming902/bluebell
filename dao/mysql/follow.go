@@ -9,13 +9,11 @@ import (
 
 func CheckFollow(data *models.ParamFollow) (error, int) {
 
-	var Userid struct {
-		UserID int64 `db:"user_id"`
-	}
+	UserId := new(models.Userid)
 
 	sqlstr := `select user_id from user where user_id = ?`
 
-	if err := db.Get(&Userid, sqlstr, data.Fid); err != nil {
+	if err := db.Get(UserId, sqlstr, data.Fid); err != nil {
 		if err == sql.ErrNoRows {
 			return ErrorInvalid, 2
 		} else {
@@ -55,5 +53,32 @@ func UpdateFollow(data *models.ParamFollow, t *int) error {
 	_, err := db.Exec(sqlstr, t, data.Fid, data.Userid)
 
 	return err
+
+}
+
+func GetFollowers(userId string) (*models.Userid, error) {
+
+	UId := new(models.Userid)
+
+	sqlstr := `select user_id FROM follow where follow_user_id = ? `
+	if err := db.Get(UId, sqlstr, userId); err != nil {
+		return nil, err
+	}
+
+	return UId, nil
+
+}
+
+// GetFollowing 查看我关注的人
+func GetFollowing(userId string) (*models.Userid, error) {
+
+	UId := new(models.Userid)
+
+	sqlstr := `select follow_user_id FROM follow where user_id = ? `
+	if err := db.Get(UId, sqlstr, userId); err != nil {
+		return nil, err
+	}
+
+	return UId, nil
 
 }
