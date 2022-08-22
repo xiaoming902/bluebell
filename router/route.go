@@ -15,8 +15,17 @@ func SetupRouter() *gin.Engine {
 
 	v1 := r.Group("/api/v1")
 
+	// 用户注册
 	r.POST("/signup", controller.SignUpHandler)
+
+	// 用户登录
 	r.POST("/login", controller.LoginHandler)
+
+	// 获取验证码
+	r.GET("/captcha", controller.GetCaptcha)
+
+	// 查看用户主页
+	r.GET("/user/:userid", controller.GetUserInfoHandler)
 
 	v1.Use(middlewares.JWTAuthMiddleware())
 
@@ -28,7 +37,11 @@ func SetupRouter() *gin.Engine {
 		v1.GET("/post", controller.GetPostListHandler)
 		v1.POST("/vote", controller.PostVoteController)
 
+		// 关注用户
 		v1.POST("/follow", controller.FollowHandler)
+
+		// 修改密码
+		v1.POST("/user/password", controller.ChangeUserPassword)
 	}
 
 	r.NoRoute(func(c *gin.Context) {

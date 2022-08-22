@@ -21,3 +21,8 @@ type ParamFollow struct {
 	Fid    int64 `json:"fid" db:"follow_user_id" binding:"required"`
 	Act    *int  `json:"act" db:"is_valid" binding:"required,oneof=0 1"`
 }
+
+type ChangeUserPassword struct {
+	Password    string `form:"password" json:"password" binding:"required"`
+	OldPassword string `form:"old_password" json:"old_password" binding:"required"`
+}

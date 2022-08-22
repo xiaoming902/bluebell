@@ -5,3 +5,8 @@ type User struct {
 	Username string `db:"username"`
 	Password string `db:"password"`
 }
+
+type UseInfo struct {
+	Username    string `db:"username"`
+	Description string `db:"description"`
+}
