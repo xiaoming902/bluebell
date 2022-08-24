@@ -5,9 +5,8 @@ import (
 	"crypto/md5"
 	"database/sql"
 	"encoding/hex"
+	"strings"
 )
-
-const secret = "jichen"
 
 type saltpasswd struct {
 	passwd string
@@ -26,22 +25,26 @@ func CheckUserExist(username string) (err error) {
 }
 
 func InsertUser(user *models.User) (err error) {
-	user.Password = EncryptPassword(user.Password)
-	sqlstr := `insert into user(user_id, username, password) values(?,?,?)`
-	_, err = db.Exec(sqlstr, user.UserID, user.Username, user.Password)
+	// user.Password = EncryptPassword(user.Password)
+	sqlstr := `insert into user(user_id, username, password, salt) values(?,?,?,?)`
+	_, err = db.Exec(sqlstr, user.UserID, user.Username, user.Password, user.Salt)
 	return
 }
 
 func EncryptPassword(oPassword string) string {
 	h := md5.New()
-	h.Write([]byte(secret))
-	return hex.EncodeToString(h.Sum([]byte(oPassword)))
+	h.Write([]byte(oPassword))
+	return hex.EncodeToString(h.Sum(nil))
+}
 
+// ValidPassword 检查密码是否一致
+func ValidPassword(dbPassword, password, salt string) bool {
+	return strings.Compare(dbPassword, EncryptPassword(EncryptPassword(password)+salt)) == 0
 }
 
 func Login(user *models.User) (err error) {
 	oPassword := user.Password
-	sqlstr := `select user_id, username, password from user where username = ?`
+	sqlstr := `select user_id, username, password, salt from user where username = ?`
 	err = db.Get(user, sqlstr, user.Username)
 	if err == sql.ErrNoRows {
 		return ErrorUserNotExist
@@ -50,10 +53,10 @@ func Login(user *models.User) (err error) {
 		return err
 	}
 
-	password := EncryptPassword(oPassword)
-	if password != user.Password {
+	if !ValidPassword(user.Password, oPassword, user.Salt) {
 		return ErrorInvalidPassword
 	}
+
 	return
 
 }

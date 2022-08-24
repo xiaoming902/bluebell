@@ -6,8 +6,17 @@ import (
 	"bluebell/pkg/jwt"
 	"bluebell/pkg/snowflake"
 	"errors"
+	"github.com/gofrs/uuid"
 	"unicode/utf8"
 )
+
+// EncryptPasswordAndSalt 密码加密&生成salt
+func EncryptPasswordAndSalt(password string) (string, string) {
+	salt := uuid.Must(uuid.NewV4()).String()[:8]
+	password = mysql.EncryptPassword(mysql.EncryptPassword(password) + salt)
+
+	return password, salt
+}
 
 func SignUp(p *models.ParamSignUp) (err error) {
 	// 1. 判断用户存不存在
@@ -15,13 +24,17 @@ func SignUp(p *models.ParamSignUp) (err error) {
 		return err
 	}
 
-	// 2.生成UID
+	// 2.生成UID && 密码加密&生成salt
 	userID := snowflake.GetID()
+
+	password, salt := EncryptPasswordAndSalt(p.Password)
+
 	// 3.保存进数据库
 	user := &models.User{
 		UserID:   userID,
 		Username: p.UserName,
-		Password: p.Password,
+		Password: password,
+		Salt:     salt,
 	}
 
 	return mysql.InsertUser(user)

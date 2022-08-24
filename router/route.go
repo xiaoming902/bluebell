@@ -52,6 +52,7 @@ func SetupRouter() *gin.Engine {
 
 		// 修改密码
 		v1.POST("/user/password", controller.ChangeUserPassword)
+
 	}
 
 	r.NoRoute(func(c *gin.Context) {

@@ -35,16 +35,4 @@ func main() {
 		fmt.Printf("run server failed, err:%v\n", err)
 		return
 	}
-	//s := &http.Server{
-	//	Addr:           setting.Conf.Add + ":" + setting.Conf.Port,
-	//	Handler:        r,
-	//	ReadTimeout:    setting.Conf.ReadTimeout,
-	//	WriteTimeout:   setting.Conf.WriteTimeout,
-	//	MaxHeaderBytes: 1 << 20,
-	//}
-	//
-	//if err := s.ListenAndServe(); err != nil {
-	//	log.Fatalf("run app failed: %s", err)
-	//}
-
 }

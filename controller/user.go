@@ -44,11 +44,11 @@ func LoginHandler(c *gin.Context) {
 	}
 	token, err := logic.Login(p)
 	if err != nil {
-		if errors.Is(err, mysql.ErrorUserExist) {
-			ResponseError(c, CodeUserNotExist)
+		if errors.Is(err, mysql.ErrorUserNotExist) {
+			ResponseError(c, CodeInvalidPassword)
 			return
 		}
-		ResponseError(c, CodeInvalidPassword)
+		ResponseError(c, CodeServerBusy)
 		return
 	}
 
