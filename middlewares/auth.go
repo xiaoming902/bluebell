@@ -9,6 +9,7 @@ import (
 )
 
 const CtxtUserIDKey = "userID"
+const CtxtUserNameKey = "Username"
 
 // JWTAuthMiddleware 基于JWT的认证中间件
 func JWTAuthMiddleware() func(c *gin.Context) {
@@ -38,6 +39,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 		}
 		// 将当前请求的username信息保存到请求的上下文c上
 		c.Set(CtxtUserIDKey, mc.UserID)
+		c.Set(CtxtUserNameKey, mc.Username)
 		c.Next() // 后续的处理函数可以用过c.Get("username")来获取当前请求的用户信息
 	}
 }

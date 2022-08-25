@@ -44,7 +44,7 @@ func LoginHandler(c *gin.Context) {
 	}
 	token, err := logic.Login(p)
 	if err != nil {
-		if errors.Is(err, mysql.ErrorUserNotExist) {
+		if errors.Is(err, mysql.ErrorUserNotExist) || errors.Is(err, mysql.ErrorInvalidPassword) {
 			ResponseError(c, CodeInvalidPassword)
 			return
 		}
@@ -91,7 +91,6 @@ func GetUserInfoHandler(c *gin.Context) {
 }
 
 func ChangeUserPassword(c *gin.Context) {
-
 	p := new(models.ChangeUserPassword)
 	if err := c.ShouldBindJSON(p); err != nil {
 		zap.L().Error("Login with invalid param", zap.Error(err))
@@ -106,10 +105,8 @@ func ChangeUserPassword(c *gin.Context) {
 		return
 	}
 
+	u, _ := c.Get("Username")
 	//旧密码校验
-
-	u, _ := c.Get("username")
-
 	if !logic.ValidPassword(u.(string), p.OldPassword) {
 		ResponseError(c, CodeOldPassword)
 		return

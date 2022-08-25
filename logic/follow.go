@@ -47,13 +47,14 @@ func Follow(p *models.ParamFollow) error {
 
 }
 
+// GetFollowers 查看关注我的人 (粉丝)
 func GetFollowers(userId string) (*models.Userid, error) {
 
 	return mysql.GetFollowers(userId)
 
 }
 
-func GetFollowing(userId string) (*models.Userid, error) {
+func GetFollowing(userId string) ([]*models.Userid, error) {
 
 	return mysql.GetFollowing(userId)
 

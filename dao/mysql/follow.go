@@ -3,7 +3,6 @@ package mysql
 import (
 	"bluebell/models"
 	"database/sql"
-
 	"go.uber.org/zap"
 )
 
@@ -70,15 +69,15 @@ func GetFollowers(userId string) (*models.Userid, error) {
 }
 
 // GetFollowing 查看我关注的人
-func GetFollowing(userId string) (*models.Userid, error) {
+func GetFollowing(userId string) ([]*models.Userid, error) {
 
-	UId := new(models.Userid)
+	var useridList []*models.Userid
 
 	sqlstr := `select follow_user_id FROM follow where user_id = ? `
-	if err := db.Get(UId, sqlstr, userId); err != nil {
+	if err := db.Select(&useridList, sqlstr, userId); err != nil {
 		return nil, err
 	}
 
-	return UId, nil
+	return useridList, nil
 
 }
