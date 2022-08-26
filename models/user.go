@@ -16,6 +16,6 @@ type UseInfo struct {
 }
 
 type Userid struct {
-	UserID       int64 `db:"user_id" json:"user_id"`
-	FollowUserId int64 `db:"follow_user_id" json:"follow_user_id"`
+	Username *string `db:"username" json:"user_name"`
+	UserID   int64   `db:"follow_user_id" json:"user_id"`
 }

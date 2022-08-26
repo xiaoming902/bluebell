@@ -5,6 +5,7 @@ import (
 	"bluebell/models"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"strconv"
 )
 
 // FollowHandler 关注/取关功能 1 = 关注 0 = 取关
@@ -29,7 +30,9 @@ func FollowHandler(c *gin.Context) {
 }
 
 func GetFollowersHandler(c *gin.Context) {
-	userId := c.Query("user_id")
+	userIdStr := c.Query("user_id")
+
+	userId, err := strconv.ParseInt(userIdStr, 10, 64)
 
 	data, err := logic.GetFollowers(userId)
 
@@ -43,15 +46,16 @@ func GetFollowersHandler(c *gin.Context) {
 }
 
 func GetFollowingHandler(c *gin.Context) {
-	userId := c.Query("user_id")
+	userIdStr := c.Query("user_id")
 
-	data, err := logic.GetFollowing(userId)
+	userId, err := strconv.ParseInt(userIdStr, 10, 64)
 
+	followData, err := logic.GetFollowing(userId)
 	if err != nil {
 		ResponseError(c, CodeServerBusy)
 		return
 	}
 
-	ResponseSuccess(c, data)
+	ResponseSuccess(c, followData)
 
 }

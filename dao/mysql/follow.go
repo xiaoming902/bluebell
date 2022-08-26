@@ -55,7 +55,7 @@ func UpdateFollow(data *models.ParamFollow, t *int) error {
 
 }
 
-func GetFollowers(userId string) (*models.Userid, error) {
+func GetFollowers(userId int64) (*models.Userid, error) {
 
 	UId := new(models.Userid)
 
@@ -69,11 +69,12 @@ func GetFollowers(userId string) (*models.Userid, error) {
 }
 
 // GetFollowing 查看我关注的人
-func GetFollowing(userId string) ([]*models.Userid, error) {
+func GetFollowing(userId int64) ([]*models.Userid, error) {
 
 	var useridList []*models.Userid
 
-	sqlstr := `select follow_user_id FROM follow where user_id = ? `
+	// sqlstr := `select follow_user_id FROM follow where user_id = ? `
+	sqlstr := `select u.username,f.follow_user_id FROM follow f LEFT JOIN user u on f.follow_user_id = u.user_id where f.user_id = ?`
 	if err := db.Select(&useridList, sqlstr, userId); err != nil {
 		return nil, err
 	}
