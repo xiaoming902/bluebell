@@ -34,7 +34,7 @@ func GetCommunityDetailByID(id int64) (*models.CommunityDetail, error) {
 
 }
 
-func GetCommunityByID(idStr string) (community *models.CommunityDetail, err error) {
+func GetCommunityByID(idStr int64) (community *models.CommunityDetail, err error) {
 	community = new(models.CommunityDetail)
 	sqlStr := `select community_id, community_name, introduction, create_time
 	from community

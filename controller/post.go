@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"bluebell/dao/redis"
 	"bluebell/logic"
 	"bluebell/models"
 	"strconv"
@@ -29,10 +30,10 @@ func CreatePostHandler(c *gin.Context) {
 	p.AuthorId = userID
 
 	if err := logic.CreatePost(p); err != nil {
-		zap.L().Error("sd")
 		ResponseError(c, CodeServerBusy)
 		return
 	}
+	err = redis.CreatePost(p.ID)
 
 	ResponseSuccess(c, nil)
 
@@ -48,7 +49,8 @@ func GetPostDetailHandler(c *gin.Context) {
 		return
 	}
 
-	data, err := logic.GetPost(strconv.FormatInt(pid, 10))
+	//data, err := logic.GetPost(strconv.FormatInt(pid, 10))
+	data, err := logic.GetPostById(pid)
 	if err != nil {
 		zap.L().Error("logic.GetPostByID ", zap.Error(err))
 		ResponseError(c, CodeServerBusy)
@@ -59,9 +61,11 @@ func GetPostDetailHandler(c *gin.Context) {
 
 }
 
+// GetPostListHandler 获取帖子列表的处理函数
 func GetPostListHandler(c *gin.Context) {
-
-	_, err := logic.GetPostList()
+	// 获取分页参数
+	page, size := getPageInfo(c)
+	data, err := logic.GetPostList(page, size)
 
 	if err != nil {
 		zap.L().Error("get post detail with invalid param", zap.Error(err))
@@ -69,4 +73,27 @@ func GetPostListHandler(c *gin.Context) {
 		return
 	}
 
+	ResponseSuccess(c, data)
+
+}
+
+func getPageInfo(c *gin.Context) (int64, int64) {
+	pageStr := c.Query("page")
+	sizeStr := c.Query("size")
+
+	var (
+		page int64
+		size int64
+		err  error
+	)
+
+	page, err = strconv.ParseInt(pageStr, 10, 64)
+	if err != nil {
+		page = 1
+	}
+	size, err = strconv.ParseInt(sizeStr, 10, 64)
+	if err != nil {
+		size = 10
+	}
+	return page, size
 }

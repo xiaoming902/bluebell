@@ -2,6 +2,7 @@ package main
 
 import (
 	"bluebell/dao/mysql"
+	"bluebell/dao/redis"
 	"bluebell/logger"
 	"bluebell/pkg/snowflake"
 	"bluebell/router"
@@ -23,6 +24,13 @@ func main() {
 	}
 
 	defer mysql.Close() // 程序退出关闭数据库连接
+
+	if err := redis.Init(settings.Conf.RedisConfig); err != nil {
+		fmt.Printf("init mysql failed, err:%v\n", err)
+		return
+	}
+
+	defer redis.Close() // 程序退出关闭数据库连接
 
 	if err := snowflake.Init(settings.Conf.StartTime, settings.Conf.MachineId); err != nil {
 		fmt.Printf("init snowflake failed, err:%v\n", err)
