@@ -11,6 +11,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	orderTime  = "time"
+	orderScore = "score"
+)
+
 // CreatePostHandler 创建帖子
 func CreatePostHandler(c *gin.Context) {
 
@@ -76,6 +81,18 @@ func GetPostListHandler(c *gin.Context) {
 	ResponseSuccess(c, data)
 
 }
+
+//func GetPostListHandler2(c *gin.Context) {
+//	// Get请求参数(query string): /api/v1/posts2?page=1&size=10&order=time
+//	p := &models.ParamPostList{
+//		Page:  1,
+//		Size:  10,
+//		Order: orderTime,
+//	}
+//	if err := c.ShouldBindQuery(p); err != nil {
+//		ResponseError(c, CodeInvalidParam)
+//	}
+//}
 
 func getPageInfo(c *gin.Context) (int64, int64) {
 	pageStr := c.Query("page")

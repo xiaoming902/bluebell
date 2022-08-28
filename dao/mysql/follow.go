@@ -1,6 +1,7 @@
 package mysql
 
 import (
+	"bluebell/dao/redis"
 	"bluebell/models"
 	"database/sql"
 	"go.uber.org/zap"
@@ -8,7 +9,7 @@ import (
 
 func CheckFollow(data *models.ParamFollow) (error, int) {
 
-	UserId := new(models.Userid)
+	UserId := new(models.UserId)
 
 	sqlstr := `select user_id from user where user_id = ?`
 
@@ -16,7 +17,7 @@ func CheckFollow(data *models.ParamFollow) (error, int) {
 		if err == sql.ErrNoRows {
 			return ErrorInvalid, 2
 		} else {
-			zap.L().Error("查询失败 CheckFollow")
+			zap.L().Error("查询失败 CheckFollow" + err.Error())
 			return ErrorInvalid, 2
 		}
 	}
@@ -42,6 +43,9 @@ func SaveFollow(data *models.ParamFollow) error {
 
 	sqlstr := `insert into follow(user_id, follow_user_id, is_valid) values(?,?,?)`
 	_, err := db.Exec(sqlstr, data.Userid, data.Fid, data.Act)
+	if err == nil {
+		redis.AddToRedisSet(data.Userid, data.Fid)
+	}
 	return err
 
 }
@@ -74,11 +78,11 @@ func GetFollowing(userId int64) ([]*models.Userid, error) {
 	var useridList []*models.Userid
 
 	// sqlstr := `select follow_user_id FROM follow where user_id = ? `
-	sqlstr := `select u.username,f.follow_user_id FROM follow f LEFT JOIN user u on f.follow_user_id = u.user_id where f.user_id = ?`
+	sqlstr := `select u.username,f.follow_user_id FROM follow f LEFT JOIN user u on f.follow_user_id = u.user_id where f.user_id = ? and f.is_valid = 1`
+
 	if err := db.Select(&useridList, sqlstr, userId); err != nil {
 		return nil, err
 	}
-
 	return useridList, nil
 
 }

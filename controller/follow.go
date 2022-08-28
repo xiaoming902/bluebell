@@ -25,7 +25,7 @@ func FollowHandler(c *gin.Context) {
 		ResponseError(c, CodeServerBusy)
 		return
 	}
-	ResponseSuccess(c, "添加成功")
+	ResponseSuccess(c, nil)
 
 }
 
@@ -45,6 +45,7 @@ func GetFollowersHandler(c *gin.Context) {
 
 }
 
+// GetFollowingHandler 查看我关注的人
 func GetFollowingHandler(c *gin.Context) {
 	userIdStr := c.Query("user_id")
 
@@ -55,7 +56,6 @@ func GetFollowingHandler(c *gin.Context) {
 		ResponseError(c, CodeServerBusy)
 		return
 	}
-
 	ResponseSuccess(c, followData)
 
 }

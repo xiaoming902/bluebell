@@ -1,9 +1,8 @@
 package models
 
 type ParamSignUp struct {
-	UserName   string `json:"username" binding:"required"`
-	Password   string `json:"password" binding:"required"`
-	RePassword string `json:"re_password" binding:"required, eqfield=Password"`
+	UserName string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 type ParamLogin struct {
@@ -27,4 +26,10 @@ type ParamFollow struct {
 type ChangeUserPassword struct {
 	Password    string `form:"password" json:"password" binding:"required"`
 	OldPassword string `form:"old_password" json:"old_password" binding:"required"`
+}
+
+type ParamPostList struct {
+	Page  int64  `json:"page"  form:"page"`
+	Size  int64  `json:"size"  form:"size"`
+	Order string `json:"order" form:"order"`
 }

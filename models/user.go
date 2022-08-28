@@ -19,3 +19,8 @@ type Userid struct {
 	Username *string `db:"username" json:"user_name"`
 	UserID   int64   `db:"follow_user_id" json:"user_id"`
 }
+
+type UserId struct {
+	Username *string `db:"username" json:"user_name"`
+	UserID   int64   `db:"user_id" json:"user_id"`
+}

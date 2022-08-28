@@ -16,7 +16,7 @@ type MyClaims struct {
 // 用于签名的字符串
 var mySigningKey = []byte("冀晨")
 
-const TokenExpireDuration = time.Hour * 2
+const TokenExpireDuration = time.Hour * 1000
 
 // GenToken 使用默认声明创建jwt
 func GenToken(userID int64, username string) (string, error) {

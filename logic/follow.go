@@ -36,7 +36,7 @@ func Follow(p *models.ParamFollow) error {
 	}
 
 	// 如果有关注信息，且目前处于取关状态，且要进行关注操作 -- 重新关注
-	if errors.Is(err, mysql.ErrorFollowExist) && *p.Act == 0 && *t == 0 {
+	if errors.Is(err, mysql.ErrorFollowExist) && *p.Act == 0 && *t == 1 {
 		err = mysql.UpdateFollow(p, t)
 		if err != nil {
 			return err
