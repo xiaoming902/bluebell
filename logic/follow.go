@@ -2,8 +2,10 @@ package logic
 
 import (
 	"bluebell/dao/mysql"
+	"bluebell/dao/redis"
 	"bluebell/models"
 	"errors"
+	"fmt"
 )
 
 func Follow(p *models.ParamFollow) error {
@@ -20,6 +22,7 @@ func Follow(p *models.ParamFollow) error {
 		return errors.New("不能关注自己")
 	}
 
+	// 之前没有关注过，第一次关注
 	if err == nil && *p.Act == 1 {
 		err = mysql.SaveFollow(p)
 		if err != nil {
@@ -33,6 +36,10 @@ func Follow(p *models.ParamFollow) error {
 		if err != nil {
 			return err
 		}
+		// 移除关注集合
+		_ = redis.FollowRemove("KeyFollowing", p.Userid, p.Fid)
+		_ = redis.FollowRemove("KeyFollowers", p.Fid, p.Userid)
+		return err
 	}
 
 	// 如果有关注信息，且目前处于取关状态，且要进行关注操作 -- 重新关注
@@ -41,6 +48,10 @@ func Follow(p *models.ParamFollow) error {
 		if err != nil {
 			return err
 		}
+		// 缓存到redis中
+		_ = redis.FollowSet("KeyFollowing", p.Userid, p.Fid)
+		_ = redis.FollowSet("KeyFollowers", p.Fid, p.Userid)
+		return err
 	}
 
 	return err
@@ -55,6 +66,12 @@ func GetFollowers(userId int64) (*models.Userid, error) {
 }
 
 func GetFollowing(userId int64) (*map[string]interface{}, error) {
+
+	set, err := redis.ReadFollowSet(userId)
+	fmt.Println(set)
+	if err != nil {
+		return nil, err
+	}
 
 	followData, err := mysql.GetFollowing(userId)
 	data := make(map[string]interface{}, 0)

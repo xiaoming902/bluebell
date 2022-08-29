@@ -43,9 +43,12 @@ func SaveFollow(data *models.ParamFollow) error {
 
 	sqlstr := `insert into follow(user_id, follow_user_id, is_valid) values(?,?,?)`
 	_, err := db.Exec(sqlstr, data.Userid, data.Fid, data.Act)
-	if err == nil {
-		redis.AddToRedisSet(data.Userid, data.Fid)
+	if err != nil {
+		return err
 	}
+	// 缓存到redis中
+	_ = redis.FollowSet("KeyFollowing", data.Userid, data.Fid)
+	_ = redis.FollowSet("KeyFollowers", data.Fid, data.Userid)
 	return err
 
 }

@@ -40,6 +40,8 @@ func SetupRouter() *gin.Engine {
 	{
 		v1.GET("/community", controller.CommunityHandler)
 		v1.GET("/community/:id", controller.CommunityDetailHandler)
+
+		// 发布帖子
 		v1.POST("/post", controller.CreatePostHandler)
 
 		// 查看具体具体帖子id

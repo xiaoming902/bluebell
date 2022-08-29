@@ -26,7 +26,7 @@ func main() {
 	defer mysql.Close() // 程序退出关闭数据库连接
 
 	if err := redis.Init(settings.Conf.RedisConfig); err != nil {
-		fmt.Printf("init mysql failed, err:%v\n", err)
+		fmt.Printf("init reids failed, err:%v\n", err)
 		return
 	}
 

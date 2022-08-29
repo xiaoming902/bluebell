@@ -47,7 +47,11 @@ func GetFollowersHandler(c *gin.Context) {
 
 // GetFollowingHandler 查看我关注的人
 func GetFollowingHandler(c *gin.Context) {
-	userIdStr := c.Query("user_id")
+	userIdStr, ok := c.GetQuery("user_id")
+	if !ok {
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
 
 	userId, err := strconv.ParseInt(userIdStr, 10, 64)
 
