@@ -11,10 +11,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	orderTime  = "time"
-	orderScore = "score"
-)
+//const (
+//	orderTime  = "time"
+//	orderScore = "score"
+//)
 
 // CreatePostHandler 创建帖子
 func CreatePostHandler(c *gin.Context) {
@@ -94,6 +94,42 @@ func GetPostListHandler(c *gin.Context) {
 //	}
 //}
 
+// UpdatePostListHandler 更新帖子
+func UpdatePostListHandler(c *gin.Context) {
+
+	pidStr := c.Param("id")
+	//pid 帖子id
+	pid, err := strconv.ParseInt(pidStr, 10, 64)
+	if err != nil {
+		zap.L().Error("get post detail with invalid param", zap.Error(err))
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+
+	userID, err := getCurrentUser(c)
+
+	if err != nil {
+		ResponseError(c, CodeNeedLogin)
+		return
+	}
+
+	p := new(models.Post)
+	if err := c.ShouldBindJSON(p); err != nil {
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+
+	p.AuthorId = userID
+
+	err = logic.UpdatePost(p, pid)
+	if err != nil {
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+
+	ResponseSuccess(c, nil)
+
+}
 func getPageInfo(c *gin.Context) (int64, int64) {
 	pageStr := c.Query("page")
 	sizeStr := c.Query("size")

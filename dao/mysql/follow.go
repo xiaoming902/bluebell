@@ -62,16 +62,16 @@ func UpdateFollow(data *models.ParamFollow, t *int) error {
 
 }
 
-func GetFollowers(userId int64) (*models.Userid, error) {
+func GetFollowers(userId int64) ([]*models.UserId, error) {
 
-	UId := new(models.Userid)
+	var useridList []*models.UserId
 
-	sqlstr := `select user_id FROM follow where follow_user_id = ? `
-	if err := db.Get(UId, sqlstr, userId); err != nil {
+	sqlstr := `select u.username,f.user_id FROM follow f LEFT JOIN user u on f.user_id = u.user_id where f.follow_user_id = ? and f.is_valid = 1`
+	if err := db.Select(&useridList, sqlstr, userId); err != nil {
 		return nil, err
 	}
 
-	return UId, nil
+	return useridList, nil
 
 }
 
@@ -80,7 +80,6 @@ func GetFollowing(userId int64) ([]*models.Userid, error) {
 
 	var useridList []*models.Userid
 
-	// sqlstr := `select follow_user_id FROM follow where user_id = ? `
 	sqlstr := `select u.username,f.follow_user_id FROM follow f LEFT JOIN user u on f.follow_user_id = u.user_id where f.user_id = ? and f.is_valid = 1`
 
 	if err := db.Select(&useridList, sqlstr, userId); err != nil {

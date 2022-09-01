@@ -58,13 +58,14 @@ func Follow(p *models.ParamFollow) error {
 
 }
 
-// GetFollowers 查看关注我的人 (粉丝)
-func GetFollowers(userId int64) (*models.Userid, error) {
+// GetFollowers 查看关注我的人 (粉丝) TODO
+func GetFollowers(userId int64) ([]*models.UserId, error) {
 
 	return mysql.GetFollowers(userId)
 
 }
 
+// GetFollowing TODO 后续需要优化
 func GetFollowing(userId int64) (*map[string]interface{}, error) {
 
 	set, err := redis.ReadFollowSet(userId)

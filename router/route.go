@@ -40,19 +40,23 @@ func SetupRouter() *gin.Engine {
 	{
 		v1.GET("/community", controller.CommunityHandler)
 		v1.GET("/community/:id", controller.CommunityDetailHandler)
+		{
+			// 发布帖子
+			v1.POST("/post", controller.CreatePostHandler)
 
-		// 发布帖子
-		v1.POST("/post", controller.CreatePostHandler)
+			// 查看具体具体帖子id
+			v1.GET("/post/:id", controller.GetPostDetailHandler)
+			// 查看帖子列表
+			v1.GET("/post", controller.GetPostListHandler)
+			//根据时间或分数获取帖子列表
+			//v1.GET("/post2", controller.GetPostListHandler2)
+			//帖子投票
+			v1.POST("/vote", controller.PostVoteController)
+			//更新帖子
+			v1.POST("/post/update/:id", controller.UpdatePostListHandler)
+			//删除帖子
 
-		// 查看具体具体帖子id
-		v1.GET("/post/:id", controller.GetPostDetailHandler)
-		// 查看帖子列表
-		v1.GET("/post", controller.GetPostListHandler)
-		//根据时间或分数获取帖子列表
-		//v1.GET("/post2", controller.GetPostListHandler2)
-
-		//帖子投票
-		v1.POST("/vote", controller.PostVoteController)
+		}
 
 		// 关注用户
 		v1.POST("/follow", controller.FollowHandler)

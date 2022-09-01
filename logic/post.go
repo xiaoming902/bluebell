@@ -3,6 +3,7 @@ package logic
 import (
 	"bluebell/dao/mysql"
 	"bluebell/models"
+	"bluebell/pkg/errcode"
 	"bluebell/pkg/snowflake"
 	"fmt"
 
@@ -97,4 +98,18 @@ func GetPostById(pid int64) (data *models.ApiPostDetail, err error) {
 	}
 	return
 
+}
+
+func UpdatePost(p *models.Post, pid int64) error {
+	id, err := GetPostById(pid)
+	if err != nil {
+		return errcode.NoPermission
+	}
+	// 判断当前id是否为帖子创建者id
+	if id.AuthorId != p.AuthorId {
+		return errcode.NoPermission
+	}
+	//mysql.UpdatePost()
+
+	return nil
 }
