@@ -48,3 +48,16 @@ func GetPostList(page, size int64) (posts []*models.ApiPostDetail, err error) {
 //	}
 //	return
 //}
+
+func UpdatePost(p *models.Post) error {
+	sqlStr := `update post set title = ?, content = ?, community_id = ? where post_id = ? and author_id = ?`
+	_, err := db.Exec(sqlStr, p.Title, p.Content, p.CommunityID, p.ID, p.AuthorId)
+	return err
+}
+
+func DeletePost(p *models.PostID) error {
+	sqlStr := `update post set status = 0 where post_id = ? and author_id = ?`
+	_, err := db.Exec(sqlStr, p.ID, p.AuthorId)
+	return err
+
+}

@@ -17,3 +17,8 @@ type ApiPostDetail struct {
 	*Post
 	*CommunityDetail `json:"community_detail"`
 }
+
+type PostID struct {
+	ID       int64 `json:"id" db:"post_id"`
+	AuthorId int64 `db:"author_id"`
+}

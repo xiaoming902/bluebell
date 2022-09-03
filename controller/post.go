@@ -123,7 +123,7 @@ func UpdatePostListHandler(c *gin.Context) {
 
 	err = logic.UpdatePost(p, pid)
 	if err != nil {
-		ResponseError(c, CodeInvalidParam)
+		ResponseError(c, CodeServerBusy)
 		return
 	}
 
@@ -149,4 +149,27 @@ func getPageInfo(c *gin.Context) (int64, int64) {
 		size = 10
 	}
 	return page, size
+}
+func DeletePostListHandler(c *gin.Context) {
+	userID, err := getCurrentUser(c)
+
+	if err != nil {
+		ResponseError(c, CodeNeedLogin)
+		return
+	}
+
+	p := new(models.PostID)
+	if err := c.ShouldBindJSON(p); err != nil {
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+	p.AuthorId = userID
+
+	err = logic.DeletePost(p)
+	if err != nil {
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+
+	ResponseSuccess(c, nil)
 }

@@ -109,7 +109,29 @@ func UpdatePost(p *models.Post, pid int64) error {
 	if id.AuthorId != p.AuthorId {
 		return errcode.NoPermission
 	}
-	//mysql.UpdatePost()
+	p.ID = pid
+	err = mysql.UpdatePost(p)
+	if err != nil {
+		return errcode.ServerError
+	}
+
+	return nil
+}
+
+func DeletePost(p *models.PostID) error {
+	id, err := GetPostById(p.ID)
+	if err != nil {
+		return errcode.NoPermission
+	}
+	// 判断当前id是否为帖子创建者id
+	if id.AuthorId != p.AuthorId {
+		return errcode.NoPermission
+	}
+
+	err = mysql.DeletePost(p)
+	if err != nil {
+		return errcode.ServerError
+	}
 
 	return nil
 }
